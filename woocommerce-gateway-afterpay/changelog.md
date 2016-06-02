@@ -1,5 +1,11 @@
 *** Afterpay Gateway Change Log ***
 
+2016.06.03 - version 1.2.2
+ * Fallback for transaction limits
+
+2016.05.20 - version 1.2.1
+ * Backwards compatibility for WooCommerce 2.1.x
+
 2015.10.24 - version 1.2
  * Using WC Receipt page to load AfterPay JS API
 
