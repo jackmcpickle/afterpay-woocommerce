@@ -1,0 +1,184 @@
+/* What is Afterpay modal */
+#afterpay-what-is-modal  img.afterpay-modal-image {
+    display: block;
+}
+#afterpay-what-is-modal  img.afterpay-modal-image-mobile{
+    display: none;
+}
+
+@media only screen and (max-width : 480px) {
+    #afterpay-what-is-modal  img.afterpay-modal-image-mobile {
+        display: block;
+    }
+    #afterpay-what-is-modal  img.afterpay-modal-image{
+        display: none;
+    }
+}
+
+.woocommerce #payment .payment_method_afterpay li {
+	float:inherit;
+}
+.woocommerce #payment .payment_method_afterpay li img {
+	float:inherit;
+}
+
+/* Afterpay info in checkout */
+#what-is-afterpay-trigger {
+    margin-top: 0;
+    margin-left: 0;
+    float: none;
+    
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+}
+
+#afterpay-logo {
+    height: 18px;
+    float: none;
+}
+
+#dt_method_afterpaypayovertime span {
+    margin-left: 10px;
+}
+
+
+.woocommerce #payment .payment_method_afterpay .form-list {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.woocommerce #payment .payment_method_afterpay .form-alt {
+    display: inline-block; /* shrink-wrap the form, to make the footer align nicely */
+    width: 100%;
+    padding: 0px 0px 0px 0px !important;
+}
+
+.woocommerce #payment .payment_method_afterpay .total-due p {
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: #A1A4A6;
+    margin: 0 5px 0 0;
+    text-transform: uppercase;
+    float: left;
+    height: 35px;
+    line-height: 38px;
+}
+
+.woocommerce #payment .payment_method_afterpay .total-due span {
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+    font-size: 30px;
+    height: 35px;
+    line-height: 35px;
+    color: #000000;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments {
+    margin-bottom: 30px;
+    margin-left: -10px;
+    position: relative;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments .header-text {
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    font-size: 9px;
+    color: #A1A4A6;
+    margin: 10px 0;
+    text-transform: uppercase;
+    line-height: 20px;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments .cost,
+.woocommerce #payment .payment_method_afterpay .instalments .icon,
+.woocommerce #payment .payment_method_afterpay .instalments .instalment {
+    display: table-row;
+    /*position: relative;*/
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments .icon:after {
+    content: "";
+    background: #f7f7f7;
+    display: block;
+    height: 1px;
+    left: 30px;
+    right: 30px;
+    margin-top: -5px;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments li {
+    display: table-cell;
+    text-align: center;
+    padding: 0 10px;
+    border-bottom: 0px;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments li:first-child {
+    padding-left: 0;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments li:last-child {
+    padding-right: 0;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments .cost {
+    font-size: 14px;
+    color: #379dd6;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments .icon img {
+    /*width: 50%;*/
+    display: inline;
+    position: relative;
+    z-index: 1;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalments .instalment {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: #A1A4A6;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalment-footer {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: #636363;
+    text-align: center;
+}
+
+.woocommerce #payment .payment_method_afterpay .instalment-footer p {
+    margin-bottom: 0px
+}
+
+.woocommerce #payment .payment_method_afterpay .instalment-footer a {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: #A1A4A6;
+    text-decoration: underline;
+}
+
+@media (min-width: 560px) {
+    .woocommerce #payment .payment_method_afterpay .instalments li {
+        padding: 0 30px;
+    }
+
+    .woocommerce #payment .payment_method_afterpay .instalments .header-text {
+        font-size: 12px;
+	text-align: center;
+    }
+
+    .woocommerce #payment .payment_method_afterpay .instalments .cost {
+        font-size: 12px;
+    }
+}
+
+/* By default, only show the callout text on the default checkout */
+#afterpay-callout {
+    display: none;
+}
+
+.checkout-onepage-index #afterpay-callout {
+    display: block;
+    margin-left: 0;
+}
