@@ -4,8 +4,8 @@
 <p> If you are upgrading to a new version of the Afterpay Plugin, it is always a good practice to backup your existing plugin before you commence the installation steps. </p>
 
 <Wordpress Installation Folder> <br/>
-| <br/>
-└── woocommerce-gateway-afterpay <br/>
+<br/>
+woocommerce-gateway-afterpay <br/>
     ├── checkout (folder)<br/>
     ├── css (folder) <br/>
     ├── images (folder) <br/>
