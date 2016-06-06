@@ -6,13 +6,12 @@
 <Wordpress Installation Folder> <br/>
 | <br/>
 └── woocommerce-gateway-afterpay <br/>
-&nbsp&nbsp&nbsp&nbsp├── checkout (folder)<br/>
-&nbsp&nbsp&nbsp&nbsp├── css <br/>
-&nbsp&nbsp&nbsp&nbsp│&nbsp&nbsp&nbsp&nbsp└── afterpay.css <br/>
-&nbsp&nbsp&nbsp&nbsp├── images (folder) <br/>
-&nbsp&nbsp&nbsp&nbsp├── js (folder) <br/>
-&nbsp&nbsp&nbsp&nbsp├── woo-includes (folder) <br/>
-&nbsp&nbsp&nbsp&nbsp└── woocommerce-afterpay.php <br/>
+    ├── checkout (folder)<br/>
+    ├── css (folder) <br/>
+    ├── images (folder) <br/>
+    ├── js (folder) <br/>
+    ├── woo-includes (folder) <br/>
+    └── woocommerce-afterpay.php <br/>
 
 <ol>
 <li> Upload the plugin folder and files to your WordPress server. Copy the whole folder (including the parent 'woocommerce-gateway-afterpay' folder itself) into the path: [wordpress-installation-folder]/wp-content/plugins/
