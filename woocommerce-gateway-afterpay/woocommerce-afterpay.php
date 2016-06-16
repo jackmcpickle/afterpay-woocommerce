@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Afterpay Gateway
 Plugin URI: http://woothemes.com/woocommerce
 Description: Use Afterpay as a credit card processor for WooCommerce.
-Version: 1.2.2
+Version: 1.3.0
 Author: AfterPay
 Author URI: http://www.afterpay.com.au/
 
@@ -29,6 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if ( ! function_exists( 'woothemes_queue_update' ) )
 	require_once( 'woo-includes/woo-functions.php' );
 
+
 /**
  * Plugin updates
  */
@@ -45,7 +46,7 @@ function woocommerce_afterpay_init() {
 		/**
 	     * @var Singleton The reference to the singleton instance of this class
 	     */
-		private static $_instance = null;
+		private static $_instance = NULL;
 
 		/** 
 		 * @var boolean Whether or not logging is enabled 
@@ -85,6 +86,9 @@ function woocommerce_afterpay_init() {
 			$this->supports 			= array( 'products', 'refunds' );
 
 		    // Load the form fields.
+		    $this->init_environment_config();
+
+		    // Load the form fields.
 		    $this->init_form_fields();
 
 		    // Load the settings.
@@ -94,17 +98,20 @@ function woocommerce_afterpay_init() {
 		    $this->init_scripts_js();
 		    $this->init_scripts_css();
 
-		    if ($this->settings['testmode'] == 'yes') {
-				$this->orderurl = 'https://api-sandbox.secure-afterpay.com.au/merchants/orders';
-				$this->limiturl = 'https://api-sandbox.secure-afterpay.com.au/merchants/valid-payment-types';
-				$this->buyurl = 'https://www-sandbox.secure-afterpay.com.au/buy';
-				$this->jsurl = 'https://www-sandbox.secure-afterpay.com.au/afterpay.js';
-		    } else {
-				$this->orderurl = 'https://api.secure-afterpay.com.au/merchants/orders';
-				$this->limiturl = 'https://api.secure-afterpay.com.au/merchants/valid-payment-types';
-				$this->buyurl = 'https://www.secure-afterpay.com.au/buy';
-				$this->jsurl = 'https://www.secure-afterpay.com.au/afterpay.js';
+		    $api_url = $this->environments[ $this->settings['testmode'] ]['api_url'];
+		    $web_url = $this->environments[ $this->settings['testmode'] ]['web_url'];
+
+		    if( empty($api_url) ) {
+		    	$api_url = $this->environments[ 'sandbox' ]['api_url'];
 		    }
+		    if( empty($web_url) ) {
+		    	$web_url = $this->environments[ 'sandbox' ]['web_url'];
+		    }
+
+			$this->orderurl = $api_url . 'merchants/orders';
+			$this->limiturl = $api_url . 'merchants/valid-payment-types';
+			$this->buyurl = $web_url . 'buy';
+			$this->jsurl = $web_url . 'afterpay.js';
 
 		    // Define user set variables
 		    $this->title = '';
@@ -135,6 +142,12 @@ function woocommerce_afterpay_init() {
 		 * @since 1.0.0
 	     */
 		function init_form_fields() {
+
+			$env_values = array();
+			foreach( $this->environments as $key => $item ) {
+				$env_values[$key] = $item["name"];
+			}
+
 			$this->form_fields = array(
 			    'enabled' => array(
 			        'title' => __( 'Enable/Disable', 'woo_afterpay' ),
@@ -151,9 +164,9 @@ function woocommerce_afterpay_init() {
 			    'testmode' => array(
 					'title' => __( 'Test mode', 'woo_afterpay' ),
 					'label' => __( 'Enable Test mode', 'woo_afterpay' ),
-					'type' => 'checkbox',
+					'type' => 'select',
+					'options' => $env_values,
 					'description' => __( 'Process transactions in Test/Sandbox mode. No transactions will actually take place.', 'woo_afterpay' ),
-					'default' => 'yes'
 				),
 				'debug' => array(
 					'title' => __( 'Debug logging', 'woo_afterpay' ),
@@ -200,7 +213,7 @@ function woocommerce_afterpay_init() {
 			        'description' => __( 'This information is supplied by Afterpay and cannot be edited.', 'woo_afterpay' ),
 			        'custom_attributes' => array(
 			        	'readonly'=>'true'
-			        	),
+			        ),
 			        'default' => ''
 			    ),
 			    'pay-over-time-limit-max' => array(
@@ -209,7 +222,7 @@ function woocommerce_afterpay_init() {
 			        'description' => __( 'This information is supplied by Afterpay and cannot be edited.', 'woo_afterpay' ),
 			        'custom_attributes' => array(
 			        	'readonly'=>'true'
-			        	),
+			        ),
 			        'default' => ''
 			    ),
 			    // 'pay-over-time-display' => array(
@@ -281,6 +294,19 @@ function woocommerce_afterpay_init() {
 
 			wp_enqueue_style('afterpay_fancybox_css');
 			wp_enqueue_style('afterpay_css');
+		}
+
+		/**
+		 * Init Environment Options
+		 *
+		 * @since 1.2.3
+		 */
+		public function init_environment_config() {
+			if ( empty( $this->environments ) ) {
+				//config separated for ease of editing
+				require( 'config/config.php' );
+				$this->environments = $environments;
+			}
 		}
 
 		/**
@@ -360,7 +386,7 @@ function woocommerce_afterpay_init() {
 			}
 
 			// Payment form
-			if ($this->settings['testmode']=='yes') : ?><p><?php _e('TEST MODE ENABLED', 'woo_afterpay'); ?></p><?php endif;
+			if ($this->settings['testmode'] != 'production') : ?><p><?php _e('TEST MODE ENABLED', 'woo_afterpay'); ?></p><?php endif;
 			//if ($this->description) { echo '<p>'.$this->description.'</p>'; } 
 			?>
 
@@ -406,8 +432,8 @@ function woocommerce_afterpay_init() {
 							)
 						);
 				}
-			}
-
+			}				
+			
 			$body = array(
 				'consumer' => array(
 					'mobile' => $order->billing_phone,
@@ -467,11 +493,11 @@ function woocommerce_afterpay_init() {
 
 			$args = array(
 				'headers' => array(
-					'Authorization' => $this->get_afterpay_authorization_code(),
-					'Content-Type' => 'application/json'
-					),
+								'Authorization' => $this->get_afterpay_authorization_code(),
+								'Content-Type' 	=> 'application/json',
+							),
 				'body' => json_encode($body)
-				);
+			);
 
 			$this->log( 'Order token request: '.print_r($args,true) );
 
@@ -511,12 +537,17 @@ function woocommerce_afterpay_init() {
 			
 			if( count($validoptions) == 0 ) {
 				// amount is not supported
-		            	$order->add_order_note(__('Order amount: $' . number_format($ordertotal, 2) . ' is not supported.', 'woo_afterpay'));
-		                wc_add_notice(__('Unfortunately, an order of $' . number_format($ordertotal, 2) . ' cannot be processed through Afterpay.', 'woo_afterpay'),'error');
-			        return array(
-			            'result' => 'failure',
-			            'redirect' => $order->get_checkout_payment_url(true)
-		      		);
+			        $order->add_order_note(__('Order amount: $' . number_format($ordertotal, 2) . ' is not supported.', 'woo_afterpay'));
+			        wc_add_notice(__('Unfortunately, an order of $' . number_format($ordertotal, 2) . ' cannot be processed through Afterpay.', 'woo_afterpay'),'error');
+				
+				//delete the order but retain the items
+				$order->update_status('trash');
+				WC()->session->order_awaiting_payment = NULL;
+
+				return array(
+				        'result' => 'failure',
+				        'redirect' => $order->get_checkout_payment_url(true)
+			      	);
 				
 			}
 			else if ($token == false) {
@@ -635,9 +666,14 @@ function woocommerce_afterpay_init() {
 			if (isset($_GET['orderId'])) {
 				$this->log( 'Checking order status for WC Order ID '.$order_id.', Afterpay Order ID '.$_GET['orderId']);
 
-				$response = wp_remote_get($this->orderurl.'/'.$_GET['orderId'], array('headers'=>array(
-						'Authorization' => $this->get_afterpay_authorization_code()
-					)));
+				$response = wp_remote_get(
+								$this->orderurl.'/'.$_GET['orderId'], 
+								array(
+									'headers'	=>	array(
+														'Authorization' => $this->get_afterpay_authorization_code()
+													)
+								)
+							);
 				$body = json_decode(wp_remote_retrieve_body($response));
 
 				$this->log( 'Checking order status result: '.print_r($body,true) );
@@ -707,8 +743,8 @@ function woocommerce_afterpay_init() {
 		 */
 		function get_afterpay_authorization_code() {
 
-			$token_id = ($this->settings['testmode'] == 'yes') ? $this->settings['test-id'] : $this->settings['prod-id'];
-			$secret_key = ($this->settings['testmode'] == 'yes') ? $this->settings['test-secret-key'] : $this->settings['prod-secret-key'];
+			$token_id = ($this->settings['testmode'] != 'production') ? $this->settings['test-id'] : $this->settings['prod-id'];
+			$secret_key = ($this->settings['testmode'] != 'production') ? $this->settings['test-secret-key'] : $this->settings['prod-secret-key'];
 
 			return 'Basic '.base64_encode($token_id.':'.$secret_key);
 		}
@@ -950,15 +986,23 @@ function woocommerce_afterpay_init() {
 					$order = new WC_Order( $onhold_order->ID );
 				}
 
-				$afterpay_orderid = get_post_meta($onhold_order->ID,'_transaction_id',true);
 				// Check if there's an order ID. If not, it's not an Afterpay order.
+				$afterpay_orderid = get_post_meta($onhold_order->ID,'_transaction_id',true);
 				if (!$afterpay_orderid) continue;
+
+				// Check if the order is just created (prevent premature order note posting)
+				if ( strtotime('now') - strtotime($order->order_date) < 120 ) continue;
 
 				$this->log( 'Checking pending order for WC Order ID '.$order->ID.', Afterpay Order ID '.$afterpay_orderid);
 				
-				$response = wp_remote_get($this->orderurl.'/'.$afterpay_orderid, array('headers'=>array(
-						'Authorization' => $this->get_afterpay_authorization_code()
-					)));
+				$response = wp_remote_get(
+								$this->orderurl.'/'.$afterpay_orderid, 
+								array(
+									'headers'=>array(
+										'Authorization' => $this->get_afterpay_authorization_code()
+									)
+								)
+							);
 				$body = json_decode(wp_remote_retrieve_body($response));
 
 				$this->log( 'Checking pending order result: '.print_r($body,true) );
@@ -993,9 +1037,14 @@ function woocommerce_afterpay_init() {
 
 				$this->log( 'Checking abandoned order for WC Order ID '.$order->ID.', Afterpay Token '.$afterpay_token);
 
-				$response = wp_remote_get($this->orderurl.'?token='.$afterpay_token, array('headers'=>array(
-						'Authorization' => $this->get_afterpay_authorization_code()
-					)));
+				$response = wp_remote_get(
+								$this->orderurl.'?token='.$afterpay_token, 
+								array(
+									'headers'=>array(
+										'Authorization' => $this->get_afterpay_authorization_code(),
+									)
+								)
+							);
 				$body = json_decode(wp_remote_retrieve_body($response));
 
 				$this->log( 'Checking abandoned order result: '.print_r($body,true) );

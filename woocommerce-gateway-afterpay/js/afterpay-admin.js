@@ -1,5 +1,7 @@
 jQuery(document).ready(function($) {
 
+	$("input#woocommerce_afterpay_pay-over-time").closest("tr").hide().checked;
+
 	$('input#woocommerce_afterpay_pay-over-time').on('change',function() {
 		if ($(this).is(':checked')) {
 			$('input#woocommerce_afterpay_pay-over-time-limit-min').closest('tr').show();
@@ -24,8 +26,8 @@ jQuery(document).ready(function($) {
 		}
 	});
 
-	$('input#woocommerce_afterpay_testmode').on('change',function() {
-		if ($(this).is(':checked')) {
+	$('select#woocommerce_afterpay_testmode').on('change',function() {
+		if ( $(this).val() != 'production' ) {
 			$('input#woocommerce_afterpay_prod-id').closest('tr').hide();
 			$('input#woocommerce_afterpay_prod-secret-key').closest('tr').hide();
 			$('input#woocommerce_afterpay_test-id').closest('tr').show();
@@ -54,5 +56,5 @@ jQuery(document).ready(function($) {
 		}
 	});
 	
-	$('input#woocommerce_afterpay_pay-over-time, #woocommerce_afterpay_pay-after-delivery, input#woocommerce_afterpay_testmode, input#woocommerce_afterpay_show-info-on-product-pages, input#woocommerce_afterpay_show-info-on-category-pages').trigger('change');
+	$('input#woocommerce_afterpay_pay-over-time, #woocommerce_afterpay_pay-after-delivery, select#woocommerce_afterpay_testmode, input#woocommerce_afterpay_show-info-on-product-pages, input#woocommerce_afterpay_show-info-on-category-pages').trigger('change');
 });

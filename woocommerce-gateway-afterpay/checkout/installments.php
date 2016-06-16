@@ -4,11 +4,11 @@
     <li class="form-alt">
         <div class="instalments">
             <p class="header-text">
-                <?php echo 'PAY FOUR FORTNIGHLY INSTALMENTS'; ?>
+                <?php echo 'Four fortnightly payments totalling '; ?>
                 <?php
                 global $woocommerce;
                 $order_total = $woocommerce->cart->total;
-                echo "$" . number_format( $order_total, 2 );
+                echo "<strong>$" . number_format( $order_total, 2 ) . "</strong>";
                 ?>
             </p>
             <ul class="cost">

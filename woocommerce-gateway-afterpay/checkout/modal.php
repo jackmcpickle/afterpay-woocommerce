@@ -7,8 +7,8 @@
 
 <div id="afterpay-what-is-modal" style="display:none;">
     <a href="https://www.afterpay.com.au/terms/" target="_blank" style="border: none">
-        <img class="afterpay-modal-image" src="<?php echo plugins_url('../images/checkout/banner-large.png', __FILE__ ) ?>" alt="Afterpay" />
-        <img class="afterpay-modal-image-mobile" src="<?php echo plugins_url('../images/checkout/modal-mobile.png', __FILE__ ) ?>" alt="Afterpay" />
+        <img class="afterpay-modal-image" src="https://static.secure-afterpay.com.au/banner-large.png" alt="Afterpay" />
+        <img class="afterpay-modal-image-mobile" src="https://static.secure-afterpay.com.au/modal-mobile.png" alt="Afterpay" />
     </a>
 </div>
 
