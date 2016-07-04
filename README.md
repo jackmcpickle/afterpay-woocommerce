@@ -13,12 +13,12 @@ woocommerce-gateway-afterpay <br/>
     └── woocommerce-afterpay.php <br/>
 
 <h3> Uploading the Plugin </h3>
-<ol>
+<ul>
 <li> Upload via FTP / SSH (For developers): Upload the plugin folder (not the ZIP) and files to your WordPress server. Copy the folder 'woocommerce-gateway-afterpay' folder into the path: [wordpress-installation-folder]/wp-content/plugins/
 </li>
 <li> Upload via Wordpress Admin: Upload the ZIP folder coming with the plugin codes to your WordPress Admin plugin uploader (<em>Plugins - Add New - Upload ZIP file</em>). It should deploy the plugin automatically.
 </li>
-</ol>
+</ul>
 
 <h3> Configuring the Plugin </h3>
 <ol>
