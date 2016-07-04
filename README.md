@@ -12,9 +12,16 @@ woocommerce-gateway-afterpay <br/>
     ├── woo-includes (folder) <br/>
     └── woocommerce-afterpay.php <br/>
 
+<h3> Uploading the Plugin </h3>
 <ol>
-<li> Upload the plugin folder and files to your WordPress server. Copy the whole folder (including the parent 'woocommerce-gateway-afterpay' folder itself) into the path: [wordpress-installation-folder]/wp-content/plugins/
+<li> Upload via FTP / SSH (For developers): Upload the plugin folder (not the ZIP) and files to your WordPress server. Copy the folder 'woocommerce-gateway-afterpay' folder into the path: [wordpress-installation-folder]/wp-content/plugins/
 </li>
+<li> Upload via Wordpress Admin: Upload the ZIP folder coming with the plugin codes to your WordPress Admin plugin uploader (<em>Plugins - Add New - Upload ZIP file</em>). It should deploy the plugin automatically.
+</li>
+</ol>
+
+<h3> Configuring the Plugin </h3>
+<ol>
 <li> Open and login to the WordPress Admin page in your browser, navigate to the plugins page by clicking the 'Plugins' item in the menu on the left side of the screen. </li>
 <li> Find the plugin 'WooCommerce Afterpay Gateway' in the plugins list, click 'Activate' link below the plugin name. </li>
 <li> Navigate to 'WooCommerce' > 'Settings' page; select the 'Checkout' tab on the top. </li>
