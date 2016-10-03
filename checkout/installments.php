@@ -1,10 +1,9 @@
 <?php /** @var $this Afterpay_Afterpay_Block_Form_Payovertime */ ?>
-<!-- <ul class="form-list" style="display:none"> -->
 <ul class="form-list" style="">
     <li class="form-alt">
         <div class="instalments">
             <p class="header-text">
-                <?php echo 'Four fortnightly payments totalling '; ?>
+                <?php echo 'Your payment schedule. Four interest-free payments totalling '; ?>
                 <?php
                 global $woocommerce;
                 $order_total = $woocommerce->cart->total;

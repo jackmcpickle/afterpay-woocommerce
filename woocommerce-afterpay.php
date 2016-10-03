@@ -131,6 +131,8 @@ function woocommerce_afterpay_init() {
 
 			add_filter( 'woocommerce_thankyou_order_id',array($this,'payment_callback'));
 
+			add_action( 'woocommerce_order_status_refunded',array($this,'create_refund'));
+
 			// Don't enable Afterpay if the amount limits are not met
 			add_filter('woocommerce_available_payment_gateways',array($this,'check_cart_within_limits'), 99, 1);
 		}
@@ -371,15 +373,7 @@ function woocommerce_afterpay_init() {
 			
 			// Check which options are available for order amount
 			$validoptions = $this->check_payment_options_for_amount($ordertotal);
-
-			// Remove options which are unticked
-			// $options = array();
-			// foreach ($validoptions as $i => $option) {
-			// 	if ($option->type == "PBI" && isset($this->settings['pay-over-time']) && $this->settings['pay-over-time'] == 'yes') {
-			// 		$options[] = $option;
-			// 	}
-			// }
-
+			
 			if( count($validoptions) == 0 ) {
 				echo "Unfortunately, orders of this value cannot be processed through Afterpay";
 				return false;
@@ -610,32 +604,9 @@ function woocommerce_afterpay_init() {
 
 			if ( !$is_pending ) {
 				$order->update_status('pending');
-			}
-			?>
-
+			}?>
 			<script src="<?php echo $this->jsurl; ?>"></script>
-			<script>
-				(function () {
-					var afterpayLoadingInterval = setInterval(function() {
-
-						if (typeof AfterPay == 'undefined') return;
-						
-						var returnUrl = <?php echo json_encode($returnurl); ?>;
-				        var transactionToken = <?php echo json_encode($token); ?>;
-
-				        AfterPay.init({ relativeCallbackURL: returnUrl });
-
-				        if (!transactionToken) {
-				            console.error('Afterpay Error: Order Token is not defined.');
-				        } else {
-				        	clearInterval(afterpayLoadingInterval);
-				        	AfterPay.display({ token: transactionToken });
-				        }
-
-					},500);
-			    })();
-			</script>
-
+			<script>!function(){var a=setInterval(function(){if("undefined"!=typeof AfterPay){var b=<?php echo json_encode($returnurl); ?>,c=<?php echo json_encode($token); ?>;AfterPay.init({relativeCallbackURL:b}),c?(clearInterval(a),AfterPay.display({token:c})):console.error("Afterpay Error: Order Token is not defined.")}},500)}();</script>
 		<?php
 		}
 
@@ -926,7 +897,7 @@ function woocommerce_afterpay_init() {
 			}
 
 			if ( ! $this->can_refund_order( $order ) ) {
-				$this->log( 'Refund Failed: No transaction ID' );
+				// $this->log( 'Refund Failed: No transaction ID' );
 				return false;
 			}
 
@@ -986,7 +957,16 @@ function woocommerce_afterpay_init() {
 					$order = new WC_Order( $onhold_order->ID );
 				}
 
-				// Check if there's an order ID. If not, it's not an Afterpay order.
+
+
+				//skip all orders that are not Afterpay
+				$payment_method = get_post_meta( $onhold_order->ID, '_payment_method', true );
+				if( $payment_method != "afterpay" ) {
+					continue;
+				}
+
+				// Check if there's an order ID. If not, it's not an Afterpay order
+				//it is pending payment which has been approved and ssigned with ID
 				$afterpay_orderid = get_post_meta($onhold_order->ID,'_transaction_id',true);
 				if (!$afterpay_orderid) continue;
 
@@ -1008,15 +988,25 @@ function woocommerce_afterpay_init() {
 				$this->log( 'Checking pending order result: '.print_r($body,true) );
 
 				// Check status of order
-				if ($body->status == "APPROVED") {
-					$order->add_order_note(sprintf(__('Checked payment status with Afterpay. Payment approved. Afterpay Order ID: %s','woo_afterpay'),$body->id));
-					$order->payment_complete($body->id);
-				} elseif ($body->status == "PENDING") {
-					$order->add_order_note(__('Checked payment status with Afterpay. Still pending approval.','woo_afterpay'));
+				if ($body->totalResults == 1) {
+					if ($body->status == "APPROVED") {
+						$order->add_order_note(sprintf(__('Checked payment status with Afterpay. Payment approved. Afterpay Order ID: %s','woo_afterpay'),$body->id));
+						$order->payment_complete($body->id);
+					} elseif ($body->status == "PENDING") {
+						$order->add_order_note(__('Checked payment status with Afterpay. Still pending approval.','woo_afterpay'));
+					} else {
+						$order->add_order_note(sprintf(__('Checked payment status with Afterpay. Payment %s. Afterpay Order ID: %s','woo_afterpay'),strtolower($body->status),$body->id));
+						$order->update_status( 'failed' );
+					} 
 				} else {
-					$order->add_order_note(sprintf(__('Checked payment status with Afterpay. Payment %s. Afterpay Order ID: %s','woo_afterpay'),strtolower($body->status),$body->id));
-					$order->update_status( 'failed' );
-				} 
+
+					if( strtotime('now') - strtotime($order->order_date) > 3600 ) {
+						$order->add_order_note(sprintf(__('On Hold Order Expired')));
+						$order->update_status( 'cancelled' );
+					}
+					else {
+					}
+				}
 			}
 
 			// Get PENDING orders that may have been abandoned, or browser window closed after approved
@@ -1029,6 +1019,12 @@ function woocommerce_afterpay_init() {
 				}
 				else {
 					$order = new WC_Order( $pending_order->ID );
+				}
+
+				//skip all orders that are not Afterpay
+				$payment_method = get_post_meta( $pending_order->ID, '_payment_method', true );
+				if( $payment_method != "afterpay" ) {
+					continue;
 				}
 
 				$afterpay_token = get_post_meta($pending_order->ID,'_afterpay_token',true);
@@ -1062,7 +1058,14 @@ function woocommerce_afterpay_init() {
 						$order->update_status( 'failed' );
 					} 
 				} else {
-					$order->add_order_note(__('Unable to confirm payment status with Afterpay. Please check status manually.','woo_afterpay'));
+
+					if( strtotime('now') - strtotime($order->order_date) > 3600 ) {
+						$order->add_order_note(sprintf(__('Pending Order Expired')));
+						$order->update_status( 'cancelled' );
+					}
+					else {
+					}
+					//$order->add_order_note(__('Unable to confirm payment status with Afterpay. Please check status manually.','woo_afterpay'));
 				}
 
 			}
@@ -1104,6 +1107,17 @@ function woocommerce_afterpay_init() {
 			}
 		}
 
+		function create_refund( $order_id ) {
+			$order = new WC_Order( $order_id );
+			$order_refunds = $order->get_refunds();
+
+			if( !empty($order_refunds) ) {
+				$refund_amount = $order_refunds[0]->get_refund_amount();
+				if( !empty($refund_amount) ) {
+					$this->process_refund($order, $refund_amount, "Admin Performed Refund");
+				}
+			}
+		}
 	}
 
 
@@ -1243,11 +1257,8 @@ function woocommerce_afterpay_init() {
 				if( method_exists($order, "get_cancel_order_url_raw") ) {
 					wp_redirect($order->get_cancel_order_url_raw());
 				}
-				else {
-					$order->update_status( 'cancelled' );
-					global $woocommerce;
-					$cart_url = $woocommerce->cart->get_cart_url();
-					wp_redirect($cart_url);
+				else {	
+					wp_redirect($order->get_cancel_order_url());
 				}
 				exit;
 			}

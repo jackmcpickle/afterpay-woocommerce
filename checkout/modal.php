@@ -1,5 +1,5 @@
 <img src="<?php echo plugins_url('../images/afterpay_logo.png', __FILE__ ) ?>" class="v-middle" id="afterpay-logo" />
-<span id="afterpay-callout"><?php echo 'Pay four interest-free payments over 8 weeks.'; ?></span>
+<span id="afterpay-callout"><?php echo 'Pay four interest-free payments every 2 weeks.'; ?></span>
 
 <a href="#afterpay-what-is-modal" id="what-is-afterpay-trigger">
     <?php echo 'What is Afterpay?'; ?>
