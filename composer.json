@@ -1,0 +1,10 @@
+{
+    "name": "afterpay/afterpay-woocommerce",
+    "description": "Afterpay extension for WooCommerce",
+    "type": "wordpress-plugin",
+    "license": "GNU-v3",
+    "minimum-stability": "stable",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
