@@ -526,7 +526,7 @@ function woocommerce_afterpay_init() {
 			}
 			
 			// Get the order token
-			$token = $this->get_order_token($_POST['afterpay_payment_type'], $order);
+			$token = $this->get_order_token('PBI', $order);
 			$validoptions = $this->check_payment_options_for_amount($ordertotal);
 			
 			if( count($validoptions) == 0 ) {
