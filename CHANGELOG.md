@@ -6,7 +6,7 @@ Release date: 10 Apr 2017
  
 Platform: WooCommerce
 Supported Editions and Versions:
-- 	WooCommerce             version 2.1 and later
+- 	WooCommerce version 2.1 and later
  
 Release Summary
 Version 1.3.1 of the Afterpay-WooCommerce plugin delivers:
