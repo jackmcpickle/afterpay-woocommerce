@@ -1,4 +1,26 @@
 *** Afterpay Gateway Change Log ***
+Copyright (c) 2017 AfterPay (http://afterpay.com.au/)
+
+Release version: 1.3.1
+Release date: 10 Apr 2017
+ 
+Platform: WooCommerce
+Supported Editions and Versions:
+- 	WooCommerce             version 2.1 and later
+ 
+Release Summary
+Version 1.3.1 of the Afterpay-WooCommerce plugin delivers:
+- 	Enhancement to support the product data changes introduced in WooCommerce v3.0.0 (released 04 Apr 2017, https://woocommerce.wordpress.com/2017/04/04/say-hello-to-woocommerce-3-0-bionic-butterfly).
+ 
+Compability Enhancements
+
+Release Details
+Product Data Retrieval Changes
+-	Implemented improved checkout handling to avoid "Invalid Product" exception introduced in WooCommerce 3.0.0.
+-	Implemented Products Data Retrieval as recommended in WooCommerce 3.0.0 Class specifications (https://docs.woocommerce.com/wc-apidocs/class-WC_Product_Variation.html)
+-	Implemented backwards compatibility handling for Products Data Retrieval for WooCommerce 2.6.14 down to 2.1
+ 
+
 
 2016.06.15 - version 1.3.0
  * Major changes on Admin area to make it less cluttered
