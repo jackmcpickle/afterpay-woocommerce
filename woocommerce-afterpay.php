@@ -48,13 +48,13 @@ function woocommerce_afterpay_init() {
 	     */
 		private static $_instance = NULL;
 
-		/** 
-		 * @var boolean Whether or not logging is enabled 
+		/**
+		 * @var boolean Whether or not logging is enabled
 		 */
 		public static $log_enabled = false;
 
-		/** 
-		 * @var WC_Logger Logger instance 
+		/**
+		 * @var WC_Logger Logger instance
 		 */
 		public static $log = false;
 
@@ -62,7 +62,7 @@ function woocommerce_afterpay_init() {
 		/**
 		 * Main WC_Gateway_Afterpay Instance
 		 *
-		 * Used for WP-Cron jobs when 
+		 * Used for WP-Cron jobs when
 		 *
 		 * @since 1.0
 		 * @return WC_Gateway_Afterpay Main instance
@@ -104,7 +104,7 @@ function woocommerce_afterpay_init() {
 		    if( !empty($this->environments[ $this->settings['testmode'] ]['web_url']) ) {
 		    	$web_url = $this->environments[ $this->settings['testmode'] ]['web_url'];
 		    }
-		    
+
 
 		    if( empty($api_url) ) {
 		    	$api_url = $this->environments[ 'sandbox' ]['api_url'];
@@ -237,7 +237,7 @@ function woocommerce_afterpay_init() {
 			    //     'type' => 'wysiwyg',
 			    //     'label' => __( 'This information will be displayed on the checkout page if you enable Pay Over Time.', 'woo_afterpay' ),
 			    //     'default' => $this->default_pay_over_time_message()
-			    // ),		   
+			    // ),
 			    'shop-messaging' => array(
 					'title'       => __( 'Payment alternative information', 'woocommerce' ),
 					'type'        => 'title',
@@ -284,7 +284,7 @@ function woocommerce_afterpay_init() {
 			wp_register_script('afterpay_fancybox_js', plugins_url('js/fancybox2/jquery.fancybox.js', __FILE__ ));
 			wp_register_script('afterpay_js', plugins_url('js/afterpay.js', __FILE__ ));
 			wp_register_script('afterpay_admin_js', plugins_url('js/afterpay-admin.js', __FILE__ ));
-			
+
 			wp_enqueue_script('afterpay_fancybox_js');
 			wp_enqueue_script('afterpay_js');
 			wp_enqueue_script('afterpay_admin_js');
@@ -321,10 +321,10 @@ function woocommerce_afterpay_init() {
 		 *
 		 * @since 1.0.0
 		 */
-		public function admin_options() { 
+		public function admin_options() {
 			?>
 	    	<h3><?php _e('Afterpay Gateway', 'woo_afterpay'); ?></h3>
-	    	
+
 	    	<table class="form-table">
 	    		<?php
 	    		// Generate the HTML For the settings form.
@@ -376,10 +376,10 @@ function woocommerce_afterpay_init() {
 			global $woocommerce;
 
 			$ordertotal = $woocommerce->cart->total;
-			
+
 			// Check which options are available for order amount
 			$validoptions = $this->check_payment_options_for_amount($ordertotal);
-			
+
 			if( count($validoptions) == 0 ) {
 				echo "Unfortunately, orders of this value cannot be processed through Afterpay";
 				return false;
@@ -387,10 +387,10 @@ function woocommerce_afterpay_init() {
 
 			// Payment form
 			if ($this->settings['testmode'] != 'production') : ?><p><?php _e('TEST MODE ENABLED', 'woo_afterpay'); ?></p><?php endif;
-			//if ($this->description) { echo '<p>'.$this->description.'</p>'; } 
+			//if ($this->description) { echo '<p>'.$this->description.'</p>'; }
 			?>
 
-			
+
 			<input type="hidden" name="afterpay_payment_type" value="PBI" checked="checked" />
 
 
@@ -416,7 +416,7 @@ function woocommerce_afterpay_init() {
 			if (count($orderitems)) {
 				foreach ($orderitems as $item) {
 					// get SKU
-					if ($item['variation_id']) { 
+					if ($item['variation_id']) {
 
 						if(function_exists("wc_get_product")) {
 					    	$product = wc_get_product($item['variation_id']);
@@ -424,7 +424,7 @@ function woocommerce_afterpay_init() {
 					    else {
 					    	$product = new WC_Product($item['variation_id']);
 					    }
-				  	} 
+				  	}
 				  	else {
 
 				  		if(function_exists("wc_get_product")) {
@@ -435,7 +435,7 @@ function woocommerce_afterpay_init() {
 					    }
 				  	}
 
-					$product = 
+					$product =
 						$items[] = array(
 							'name' 		=> $item['name'],
 							'sku' 		=> $product->get_sku(),
@@ -446,8 +446,8 @@ function woocommerce_afterpay_init() {
 							)
 						);
 				}
-			}				
-			
+			}
+
 			$body = array(
 				'consumer' => array(
 					'mobile' => $order->billing_phone,
@@ -530,7 +530,7 @@ function woocommerce_afterpay_init() {
 		/**
 		 * Process the payment and return the result
 		 * - redirects the customer to the pay page
-		 * 
+		 *
 		 * @param int $order_id
 		 * @since 1.0.0
 		 */
@@ -539,21 +539,21 @@ function woocommerce_afterpay_init() {
 			$ordertotal = $woocommerce->cart->total;
 
 			if( function_exists("wc_get_order") ) {
-				$order = wc_get_order( $order_id );	
+				$order = wc_get_order( $order_id );
 			}
 			else {
 				$order = new WC_Order( $order_id );
 			}
-			
+
 			// Get the order token
 			$token = $this->get_order_token('PBI', $order);
 			$validoptions = $this->check_payment_options_for_amount($ordertotal);
-			
+
 			if( count($validoptions) == 0 ) {
 				// amount is not supported
 			        $order->add_order_note(__('Order amount: $' . number_format($ordertotal, 2) . ' is not supported.', 'woo_afterpay'));
 			        wc_add_notice(__('Unfortunately, an order of $' . number_format($ordertotal, 2) . ' cannot be processed through Afterpay.', 'woo_afterpay'),'error');
-				
+
 				//delete the order but retain the items
 				$order->update_status('trash');
 				WC()->session->order_awaiting_payment = NULL;
@@ -562,7 +562,7 @@ function woocommerce_afterpay_init() {
 				        'result' => 'failure',
 				        'redirect' => $order->get_checkout_payment_url(true)
 			      	);
-				
+
 			}
 			else if ($token == false) {
 				// Couldn't generate token
@@ -593,15 +593,15 @@ function woocommerce_afterpay_init() {
 		 * @since 1.0.0
 		 */
 		function receipt_page($order_id) {
-			global $woocommerce; 
+			global $woocommerce;
 
 			if( function_exists("wc_get_order") ) {
-				$order = wc_get_order( $order_id );	
+				$order = wc_get_order( $order_id );
 			}
 			else {
 				$order = new WC_Order( $order_id );
 			}
-			
+
 			// Get the order token
 
 			$token = get_post_meta($order_id,'_afterpay_token',true);
@@ -614,7 +614,7 @@ function woocommerce_afterpay_init() {
 			// Update order status if it isn't already
 			$is_pending = false;
 			if ( function_exists("has_status") ) {
-				$is_pending = $order->has_status('pending'); 
+				$is_pending = $order->has_status('pending');
 			}
 			else {
 				if( $order->status == 'pending' ) {
@@ -642,7 +642,7 @@ function woocommerce_afterpay_init() {
 			global $woocommerce;
 
 			if( function_exists("wc_get_order") ) {
-				$order = wc_get_order( $order_id );	
+				$order = wc_get_order( $order_id );
 			}
 			else {
 				$order = new WC_Order( $order_id );
@@ -658,7 +658,7 @@ function woocommerce_afterpay_init() {
 				$this->log( 'Checking order status for WC Order ID '.$order_id.', Afterpay Order ID '.$_GET['orderId']);
 
 				$response = wp_remote_get(
-								$this->orderurl.'/'.$_GET['orderId'], 
+								$this->orderurl.'/'.$_GET['orderId'],
 								array(
 									'headers'	=>	array(
 														'Authorization' => $this->get_afterpay_authorization_code()
@@ -668,16 +668,16 @@ function woocommerce_afterpay_init() {
 				$body = json_decode(wp_remote_retrieve_body($response));
 
 				$this->log( 'Checking order status result: '.print_r($body,true) );
-				
+
 				//backwards compatibility with WooCommerce 2.1.x
 				$is_completed = $is_processing = $is_pending = $is_on_hold =  $is_failed = false;
 
 				if ( function_exists("has_status") ) {
-					$is_completed = $order->has_status('completed'); 
-					$is_processing = $order->has_status('processing'); 
-					$is_pending = $order->has_status('pending'); 
-					$is_on_hold = $order->has_status('on-hold'); 
-					$is_failed = $order->has_status('failed'); 
+					$is_completed = $order->has_status('completed');
+					$is_processing = $order->has_status('processing');
+					$is_pending = $order->has_status('pending');
+					$is_on_hold = $order->has_status('on-hold');
+					$is_failed = $order->has_status('failed');
 				}
 				else {
 					if( $order->status == 'completed' ) {
@@ -699,7 +699,7 @@ function woocommerce_afterpay_init() {
 
 				// Check status of order
 				if ($body->status == "APPROVED") {
-					
+
 					if (!$is_completed && !$is_processing) {
 						$order->add_order_note(sprintf(__('Payment approved. Afterpay Order ID: %s','woo_afterpay'),$body->id));
 						$order->payment_complete($body->id);
@@ -721,7 +721,7 @@ function woocommerce_afterpay_init() {
 						$order->add_order_note(sprintf(__('Payment %s. Afterpay Order ID: %s','woo_afterpay'),strtolower($body->status),$body->id));
 						$order->update_status( 'pending' );
 					}
-				} 
+				}
 			}
 			return $order_id;
 		}
@@ -729,7 +729,7 @@ function woocommerce_afterpay_init() {
 		/**
 		 * Build the Afterpay Authorization code
 		 *
-		 * @return  string Authorization code 
+		 * @return  string Authorization code
 		 * @since 1.0.0
 		 */
 		function get_afterpay_authorization_code() {
@@ -743,7 +743,7 @@ function woocommerce_afterpay_init() {
 		/**
 		 * Default HTML for Pay Over Time message
 		 *
-		 * @return  string HTML markup 
+		 * @return  string HTML markup
 		 * @since 1.0.0
 		 */
 		function default_pay_over_time_message() {
@@ -812,7 +812,7 @@ function woocommerce_afterpay_init() {
 		 * @since 1.0.0
 		 */
 		function update_payment_limits() {
-			// Get existing limits 
+			// Get existing limits
 			$settings = get_option('woocommerce_afterpay_settings');
 
 			$this->log( 'Updating payment limits requested');
@@ -826,9 +826,9 @@ function woocommerce_afterpay_init() {
 				foreach ($body as $paymenttype) {
 					if ($paymenttype->type == "PBI") {
 						// Min
-						$settings['pay-over-time-limit-min'] = (is_object($paymenttype->minimumAmount)) ? $paymenttype->minimumAmount->amount : 0;
+						$settings['pay-over-time-limit-min'] = (isset($paymenttype->minimumAmount)) ? $paymenttype->minimumAmount->amount : 0;
 						// Max
-						$settings['pay-over-time-limit-max'] = (is_object($paymenttype->maximumAmount)) ? $paymenttype->maximumAmount->amount : 0;
+						$settings['pay-over-time-limit-max'] = (isset($paymenttype->maximumAmount)) ? $paymenttype->maximumAmount->amount : 0;
 					}
 				}
 			}
@@ -845,9 +845,9 @@ function woocommerce_afterpay_init() {
 		public function notify_order_shipped($order_id) {
 			$payment_method = get_post_meta( $order->id, '_payment_method', true );
 			if ($payment_method != "afterpay") return;
-			
+
 			if( function_exists("wc_get_order") ) {
-				$order = wc_get_order( $order_id );	
+				$order = wc_get_order( $order_id );
 			}
 			else {
 				$order = new WC_Order( $order_id );
@@ -908,9 +908,9 @@ function woocommerce_afterpay_init() {
 		 * @return  boolean True or false based on success
 		 */
 		public function process_refund( $order_id, $amount = null, $reason = '' ) {
-			
+
 			if( function_exists("wc_get_order") ) {
-				$order = wc_get_order( $order_id );	
+				$order = wc_get_order( $order_id );
 			}
 			else {
 				$order = new WC_Order( $order_id );
@@ -969,9 +969,9 @@ function woocommerce_afterpay_init() {
 			$onhold_orders = get_posts(array('post_type'=>'shop_order','post_status'=>'wc-on-hold'));
 
 			foreach ( $onhold_orders as $onhold_order ) {
-				
+
 				if( function_exists("wc_get_order") ) {
-					$order = wc_get_order( $onhold_order->ID );	
+					$order = wc_get_order( $onhold_order->ID );
 				}
 				else {
 					$order = new WC_Order( $onhold_order->ID );
@@ -994,9 +994,9 @@ function woocommerce_afterpay_init() {
 				if ( strtotime('now') - strtotime($order->order_date) < 120 ) continue;
 
 				$this->log( 'Checking pending order for WC Order ID '.$order->ID.', Afterpay Order ID '.$afterpay_orderid);
-				
+
 				$response = wp_remote_get(
-								$this->orderurl.'/'.$afterpay_orderid, 
+								$this->orderurl.'/'.$afterpay_orderid,
 								array(
 									'headers'=>array(
 										'Authorization' => $this->get_afterpay_authorization_code()
@@ -1017,7 +1017,7 @@ function woocommerce_afterpay_init() {
 					} else {
 						$order->add_order_note(sprintf(__('Checked payment status with Afterpay. Payment %s. Afterpay Order ID: %s','woo_afterpay'),strtolower($body->status),$body->id));
 						$order->update_status( 'failed' );
-					} 
+					}
 				} else {
 
 					if( strtotime('now') - strtotime($order->order_date) > 3600 ) {
@@ -1035,7 +1035,7 @@ function woocommerce_afterpay_init() {
 			foreach ( $pending_orders as $pending_order ) {
 
 				if( function_exists("wc_get_order") ) {
-					$order = wc_get_order( $pending_order->ID );	
+					$order = wc_get_order( $pending_order->ID );
 				}
 				else {
 					$order = new WC_Order( $pending_order->ID );
@@ -1054,7 +1054,7 @@ function woocommerce_afterpay_init() {
 				$this->log( 'Checking abandoned order for WC Order ID '.$order->ID.', Afterpay Token '.$afterpay_token);
 
 				$response = wp_remote_get(
-								$this->orderurl.'?token='.$afterpay_token, 
+								$this->orderurl.'?token='.$afterpay_token,
 								array(
 									'headers'=>array(
 										'Authorization' => $this->get_afterpay_authorization_code(),
@@ -1076,7 +1076,7 @@ function woocommerce_afterpay_init() {
 					} else {
 						$order->add_order_note(sprintf(__('Checked payment status with Afterpay. Payment %s. Afterpay Order ID: %s','woo_afterpay'),strtolower($body->results[0]->status),$body->results[0]->id));
 						$order->update_status( 'failed' );
-					} 
+					}
 				} else {
 
 					if( strtotime('now') - strtotime($order->order_date) > 3600 ) {
@@ -1106,7 +1106,7 @@ function woocommerce_afterpay_init() {
 			$total = $woocommerce->cart->total;
 
 			$pbi = ($total >= $this->settings['pay-over-time-limit-min'] && $total <= $this->settings['pay-over-time-limit-max']);
-			
+
 			if (!$pbi) {
 				unset($gateways['afterpay']);
 			}
@@ -1154,7 +1154,7 @@ function woocommerce_afterpay_init() {
 	}
 	add_filter('woocommerce_payment_gateways', 'add_afterpay_gateway' );
 
-	
+
 	add_action('woocommerce_single_product_summary','afterpay_show_pay_over_time_info_product_page',15);
 	add_action('woocommerce_after_shop_loop_item_title','afterpay_show_pay_over_time_info_index_page',15);
 
@@ -1167,7 +1167,7 @@ function woocommerce_afterpay_init() {
 		$settings = get_option('woocommerce_afterpay_settings');
 
 		if (!isset($settings['enabled']) || $settings['enabled'] !== 'yes') return;
-		
+
 		if (isset($settings['show-info-on-product-pages']) && $settings['show-info-on-product-pages'] == 'yes' && isset($settings['product-pages-info-text'])) {
 
 			global $post;
@@ -1182,7 +1182,7 @@ function woocommerce_afterpay_init() {
 
 			// Don't display if the product is a subscription product
 			if ($product->is_type('subscription')) return;
-		
+
 			// Don't show if the string has [AMOUNT] and price is variable, if the amount is zero, or if the amount doesn't fit within the limits
 			if ((strpos($settings['product-pages-info-text'],'[AMOUNT]') !== false && strpos($product->get_price_html(),'&ndash;') !== false) || $price == 0 || $settings['pay-over-time-limit-max'] < $price || $settings['pay-over-time-limit-min'] > $price) return;
 
@@ -1195,18 +1195,18 @@ function woocommerce_afterpay_init() {
 	function afterpay_edit_variation_price_html( $price, $variation ) {
  		$return_html = $price;
 		$settings = get_option('woocommerce_afterpay_settings');
-		
+
 		if (!isset($settings['enabled']) || $settings['enabled'] !== 'yes') return;
- 
+
  		if (isset($settings['show-info-on-product-pages']) && $settings['show-info-on-product-pages'] == 'yes' && isset($settings['product-pages-info-text'])) {
  			$price = $variation->get_price();
-	
+
 			// Don't display if the parent product is a subscription product
 		 	if ($variation->parent->is_type('subscription')) return;
-	 
+
 			// Don't show if the amount is zero, or if the amount doesn't fit within the limits
 			if ($price == 0 || $settings['pay-over-time-limit-max'] < $price || $settings['pay-over-time-limit-min'] > $price) return;
-			
+
 			$instalment_price_html = wc_price($price / 4);
 		 	$afterpay_paragraph_html = str_replace('[AMOUNT]', $instalment_price_html, $settings['product-pages-info-text']);
 		 	$return_html .= '<p class="afterpay-payment-info">' . $afterpay_paragraph_html . '</p>';
@@ -1218,15 +1218,15 @@ function woocommerce_afterpay_init() {
 	add_filter( 'woocommerce_variation_sale_price_html', 'afterpay_edit_variation_price_html', 10, 2);
 
 	/**
-	 * Showing the Pay Over Time information on the product index pages 
+	 * Showing the Pay Over Time information on the product index pages
 	 *
 	 * @since 1.0.0
 	 **/
 	function afterpay_show_pay_over_time_info_index_page() {
 		$settings = get_option('woocommerce_afterpay_settings');
-		
+
 		if (!isset($settings['enabled']) || $settings['enabled'] !== 'yes') return;
-		
+
 		if (isset($settings['show-info-on-category-pages']) && $settings['show-info-on-category-pages'] == 'yes' && isset($settings['category-pages-info-text'])) {
 
 			global $post;
@@ -1240,7 +1240,7 @@ function woocommerce_afterpay_init() {
 
 			// Don't display if the product is a subscription product
 			if ($product->is_type('subscription')) return;
-		
+
 			// Don't show if the string has [AMOUNT] and price is variable, if the amount is zero, or if the amount doesn't fit within the limits
 			if ((strpos($settings['category-pages-info-text'],'[AMOUNT]') !== false && strpos($product->get_price_html(),'&ndash;') !== false) || $price == 0 || $settings['pay-over-time-limit-max'] < $price || $settings['pay-over-time-limit-min'] > $price) return;
 
@@ -1288,9 +1288,9 @@ function woocommerce_afterpay_init() {
 			$gateway = WC_Gateway_Afterpay::instance();
 
 			$order_id = wc_get_order_id_by_order_key($_GET['key']);
-				
+
 			if( function_exists("wc_get_order") ) {
-				$order = wc_get_order( $order_id );	
+				$order = wc_get_order( $order_id );
 			}
 			else {
 				$order = new WC_Order( $order_id );
@@ -1298,11 +1298,11 @@ function woocommerce_afterpay_init() {
 
 			if ($order) {
 				$gateway->log( 'Order '.$order_id.' payment cancelled by the customer while on the Afterpay checkout pages.' );
-				
+
 				if( method_exists($order, "get_cancel_order_url_raw") ) {
 					wp_redirect($order->get_cancel_order_url_raw());
 				}
-				else {	
+				else {
 					wp_redirect($order->get_cancel_order_url());
 				}
 				exit;
@@ -1347,7 +1347,7 @@ register_deactivation_hook( __FILE__, 'afterpay_delete_wpcronjob' );
  **/
 function afterpay_add_fifteen_minute_schedule( $schedules ) {
   	$schedules['fifteenminutes'] = array(
-    	'interval' => 15 * 60, 
+    	'interval' => 15 * 60,
     	'display' => __( 'Every 15 minutes', 'woo_afterpay' )
   	);
   	return $schedules;
@@ -1360,14 +1360,14 @@ add_filter('cron_schedules', 'afterpay_add_fifteen_minute_schedule');
  * @since 1.2.1
  **/
 function afterpay_get_aws_assets() {
-	
+
 	// The Assets AWS directory - make sure it correct
 	$afterpay_assets_modal = 'http://static.secure-afterpay.com.au/banner-large.png';
 	$afterpay_assets_modal_mobile = 'http://static.secure-afterpay.com.au/modal-mobile.png';
 
 
 	$path = dirname(__FILE__) . '/images/checkout';
-	
+
 	// Create folder structure if not exist
     if (!is_dir($path) || !is_writable($path)) {
 		mkdir($path);
@@ -1377,7 +1377,7 @@ function afterpay_get_aws_assets() {
     try {
     	copy($afterpay_assets_modal, $path . '/banner-large.png');
         copy($afterpay_assets_modal_mobile, $path . '/modal-mobile.png');
-	} 
+	}
 	catch (Exception $e) {
 	    // log now if fails
 	    $this->log('Error Updating assets from source. %s', $e->getMessage());
