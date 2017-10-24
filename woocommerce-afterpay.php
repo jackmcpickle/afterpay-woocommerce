@@ -967,7 +967,7 @@ function woocommerce_afterpay_init()
         public function check_pending_abandoned_orders()
         {
             // Get ON-HOLD orders that are "pending" at Afterpay that need to be checked whether approved or denied
-            $onhold_orders = get_posts(['post_type'=>'shop_order','post_status'=>'wc-on-hold']);
+            $onhold_orders = get_posts(['post_type'=>'shop_order','post_status'=>'wc-on-hold', 'numberposts' => -1 ]);
 
             foreach ($onhold_orders as $onhold_order) {
                 if (function_exists("wc_get_order")) {
@@ -1030,7 +1030,7 @@ function woocommerce_afterpay_init()
             }
 
             // Get PENDING orders that may have been abandoned, or browser window closed after approved
-            $pending_orders = get_posts(['post_type'=>'shop_order','post_status'=>'wc-pending']);
+            $pending_orders = get_posts(['post_type'=>'shop_order','post_status'=>'wc-pending', 'numberposts' => -1 ]);
 
             foreach ($pending_orders as $pending_order) {
                 if (function_exists("wc_get_order")) {
