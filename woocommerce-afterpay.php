@@ -1384,4 +1384,4 @@ function afterpay_get_aws_assets() {
 	}
 }
 add_action('wp_login', 'afterpay_get_aws_assets');
-?>
+
