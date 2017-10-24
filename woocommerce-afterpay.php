@@ -44,8 +44,8 @@ function woocommerce_afterpay_init() {
 	class WC_Gateway_Afterpay extends WC_Payment_Gateway {
 
 		/**
-	     * @var Singleton The reference to the singleton instance of this class
-	     */
+		 * @var Singleton The reference to the singleton instance of this class
+		 */
 		private static $_instance = NULL;
 
 		/**
@@ -78,56 +78,56 @@ function woocommerce_afterpay_init() {
 
 			global $woocommerce;
 
-		    $this->id 					= 'afterpay';
-		    $this->method_title 		= __('Afterpay', 'woo_afterpay');
-			$this->method_description 	= __('Use Afterpay as a credit card processor for WooCommerce.', 'woo_afterpay');
-			$this->icon 				= WP_PLUGIN_URL . "/" . plugin_basename( dirname(__FILE__)) . '/images/afterpay_logo.png';
+			$this->id                     = 'afterpay';
+			$this->method_title         = __('Afterpay', 'woo_afterpay');
+			$this->method_description     = __('Use Afterpay as a credit card processor for WooCommerce.', 'woo_afterpay');
+			$this->icon                 = WP_PLUGIN_URL . "/" . plugin_basename( dirname(__FILE__)) . '/images/afterpay_logo.png';
 
-			$this->supports 			= array( 'products', 'refunds' );
+			$this->supports             = array( 'products', 'refunds' );
 
-		    // Load the form fields.
-		    $this->init_environment_config();
+			// Load the form fields.
+			$this->init_environment_config();
 
-		    // Load the form fields.
-		    $this->init_form_fields();
+			// Load the form fields.
+			$this->init_form_fields();
 
-		    // Load the settings.
-		    $this->init_settings();
+			// Load the settings.
+			$this->init_settings();
 
-		    // Load the frontend scripts.
-		    $this->init_scripts_js();
-		    $this->init_scripts_css();
+			// Load the frontend scripts.
+			$this->init_scripts_js();
+			$this->init_scripts_css();
 
-		    if( !empty($this->environments[ $this->settings['testmode'] ]['api_url']) ) {
-		    	$api_url = $this->environments[ $this->settings['testmode'] ]['api_url'];
-		    }
-		    if( !empty($this->environments[ $this->settings['testmode'] ]['web_url']) ) {
-		    	$web_url = $this->environments[ $this->settings['testmode'] ]['web_url'];
-		    }
+			if( !empty($this->environments[ $this->settings['testmode'] ]['api_url']) ) {
+				$api_url = $this->environments[ $this->settings['testmode'] ]['api_url'];
+			}
+			if( !empty($this->environments[ $this->settings['testmode'] ]['web_url']) ) {
+				$web_url = $this->environments[ $this->settings['testmode'] ]['web_url'];
+			}
 
 
-		    if( empty($api_url) ) {
-		    	$api_url = $this->environments[ 'sandbox' ]['api_url'];
-		    }
-		    if( empty($web_url) ) {
-		    	$web_url = $this->environments[ 'sandbox' ]['web_url'];
-		    }
+			if( empty($api_url) ) {
+				$api_url = $this->environments[ 'sandbox' ]['api_url'];
+			}
+			if( empty($web_url) ) {
+				$web_url = $this->environments[ 'sandbox' ]['web_url'];
+			}
 
 			$this->orderurl = $api_url . 'merchants/orders';
 			$this->limiturl = $api_url . 'merchants/valid-payment-types';
 			$this->buyurl = $web_url . 'buy';
 			$this->jsurl = $web_url . 'afterpay.js';
 
-		    // Define user set variables
-		    $this->title = '';
-		    if (isset($this->settings['title'])) {
-		    	$this->title = $this->settings['title'];
-		    }
-		    $this->description = __('Credit cards accepted: Visa, Mastercard','woo_afterpay');
+			// Define user set variables
+			$this->title = '';
+			if (isset($this->settings['title'])) {
+				$this->title = $this->settings['title'];
+			}
+			$this->description = __('Credit cards accepted: Visa, Mastercard','woo_afterpay');
 
-		    self::$log_enabled	= $this->settings['debug'];
+			self::$log_enabled    = $this->settings['debug'];
 
-		    // Hooks
+			// Hooks
 			add_action( 'woocommerce_receipt_'.$this->id, array($this, 'receipt_page') );
 
 			add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -144,10 +144,10 @@ function woocommerce_afterpay_init() {
 
 
 		/**
-	     * Initialise Gateway Settings Form Fields
+		 * Initialise Gateway Settings Form Fields
 		 *
 		 * @since 1.0.0
-	     */
+		 */
 		function init_form_fields() {
 
 			$env_values = array();
@@ -156,19 +156,19 @@ function woocommerce_afterpay_init() {
 			}
 
 			$this->form_fields = array(
-			    'enabled' => array(
-			        'title' => __( 'Enable/Disable', 'woo_afterpay' ),
-			        'type' => 'checkbox',
-			        'label' => __( 'Enable Afterpay', 'woo_afterpay' ),
-			        'default' => 'yes'
-			    ),
-			    'title' => array(
-			        'title' => __( 'Title', 'woo_afterpay' ),
-			        'type' => 'text',
-			        'description' => __( 'This controls the payment method title which the user sees during checkout.', 'woo_afterpay' ),
-			        'default' => __( 'Afterpay', 'woo_afterpay' )
-			    ),
-			    'testmode' => array(
+				'enabled' => array(
+					'title' => __( 'Enable/Disable', 'woo_afterpay' ),
+					'type' => 'checkbox',
+					'label' => __( 'Enable Afterpay', 'woo_afterpay' ),
+					'default' => 'yes'
+				),
+				'title' => array(
+					'title' => __( 'Title', 'woo_afterpay' ),
+					'type' => 'text',
+					'description' => __( 'This controls the payment method title which the user sees during checkout.', 'woo_afterpay' ),
+					'default' => __( 'Afterpay', 'woo_afterpay' )
+				),
+				'testmode' => array(
 					'title' => __( 'Test mode', 'woo_afterpay' ),
 					'label' => __( 'Enable Test mode', 'woo_afterpay' ),
 					'type' => 'select',
@@ -208,37 +208,37 @@ function woocommerce_afterpay_init() {
 					'type'        => 'title',
 					'description' => __( 'These settings relate to the Pay Over Time (PBI) payment method.', 'woo_afterpay' ),
 				),
-			    'pay-over-time' => array(
-			        'title' => __( 'Enable Pay Over Time', 'woo_afterpay' ),
-			        'type' => 'checkbox',
-			        'label' => __( 'Enable the Afterpay Pay Over Time payment method?', 'woo_afterpay' ),
-			        'default' => 'yes'
-			    ),
-			    'pay-over-time-limit-min' => array(
-			        'title' => __( 'Pay Over Time payment amount minimum', 'woo_afterpay' ),
-			        'type' => 'input',
-			        'description' => __( 'This information is supplied by Afterpay and cannot be edited.', 'woo_afterpay' ),
-			        'custom_attributes' => array(
-			        	'readonly'=>'true'
-			        ),
-			        'default' => ''
-			    ),
-			    'pay-over-time-limit-max' => array(
-			        'title' => __( 'Pay Over Time payment amount maximum', 'woo_afterpay' ),
-			        'type' => 'input',
-			        'description' => __( 'This information is supplied by Afterpay and cannot be edited.', 'woo_afterpay' ),
-			        'custom_attributes' => array(
-			        	'readonly'=>'true'
-			        ),
-			        'default' => ''
-			    ),
-			    // 'pay-over-time-display' => array(
-			    //     'title' => __( 'Pay Over Time checkout information', 'woo_afterpay' ),
-			    //     'type' => 'wysiwyg',
-			    //     'label' => __( 'This information will be displayed on the checkout page if you enable Pay Over Time.', 'woo_afterpay' ),
-			    //     'default' => $this->default_pay_over_time_message()
-			    // ),
-			    'shop-messaging' => array(
+				'pay-over-time' => array(
+					'title' => __( 'Enable Pay Over Time', 'woo_afterpay' ),
+					'type' => 'checkbox',
+					'label' => __( 'Enable the Afterpay Pay Over Time payment method?', 'woo_afterpay' ),
+					'default' => 'yes'
+				),
+				'pay-over-time-limit-min' => array(
+					'title' => __( 'Pay Over Time payment amount minimum', 'woo_afterpay' ),
+					'type' => 'input',
+					'description' => __( 'This information is supplied by Afterpay and cannot be edited.', 'woo_afterpay' ),
+					'custom_attributes' => array(
+						'readonly'=>'true'
+					),
+					'default' => ''
+				),
+				'pay-over-time-limit-max' => array(
+					'title' => __( 'Pay Over Time payment amount maximum', 'woo_afterpay' ),
+					'type' => 'input',
+					'description' => __( 'This information is supplied by Afterpay and cannot be edited.', 'woo_afterpay' ),
+					'custom_attributes' => array(
+						'readonly'=>'true'
+					),
+					'default' => ''
+				),
+				// 'pay-over-time-display' => array(
+				//     'title' => __( 'Pay Over Time checkout information', 'woo_afterpay' ),
+				//     'type' => 'wysiwyg',
+				//     'label' => __( 'This information will be displayed on the checkout page if you enable Pay Over Time.', 'woo_afterpay' ),
+				//     'default' => $this->default_pay_over_time_message()
+				// ),
+				'shop-messaging' => array(
 					'title'       => __( 'Payment alternative information', 'woocommerce' ),
 					'type'        => 'title',
 					'description' => __( 'You can choose to display an additional message to customers about the Pay Over Time payment method on your shop pages.', 'woo_afterpay' ),
@@ -323,34 +323,34 @@ function woocommerce_afterpay_init() {
 		 */
 		public function admin_options() {
 			?>
-	    	<h3><?php _e('Afterpay Gateway', 'woo_afterpay'); ?></h3>
+			<h3><?php _e('Afterpay Gateway', 'woo_afterpay'); ?></h3>
 
-	    	<table class="form-table">
-	    		<?php
-	    		// Generate the HTML For the settings form.
-	    		$this->generate_settings_html();
-	    		?>
+			<table class="form-table">
+				<?php
+				// Generate the HTML For the settings form.
+				$this->generate_settings_html();
+				?>
 			</table><!--/.form-table-->
-	    	<?php
-	    } // End admin_options()
+			<?php
+		} // End admin_options()
 
-	    /**
-	     * Generate wysiwyg input field
+		/**
+		 * Generate wysiwyg input field
 		 *
 		 * @since 1.0.0
-	     */
-	    function generate_wysiwyg_html ( $key, $data ) {
-	    	$html = '';
+		 */
+		function generate_wysiwyg_html ( $key, $data ) {
+			$html = '';
 
-	    	//if ( isset( $data['title'] ) && $data['title'] != '' ) $title = $data['title']; else $title = '';
-	    	$data['class'] = (isset( $data['class'] )) ? $data['class'] : '';
-	    	$data['css'] = (isset( $data['css'] )) ? '<style>'.$data['css'].'</style>' : '';
-	    	$data['label'] = (isset( $data['label'] )) ? $data['label'] : '';
+			//if ( isset( $data['title'] ) && $data['title'] != '' ) $title = $data['title']; else $title = '';
+			$data['class'] = (isset( $data['class'] )) ? $data['class'] : '';
+			$data['css'] = (isset( $data['css'] )) ? '<style>'.$data['css'].'</style>' : '';
+			$data['label'] = (isset( $data['label'] )) ? $data['label'] : '';
 
-	    	$value = ( isset( $this->settings[ $key ] ) ) ? esc_attr( $this->settings[ $key ] ) : '';
+			$value = ( isset( $this->settings[ $key ] ) ) ? esc_attr( $this->settings[ $key ] ) : '';
 
-	    	ob_start();
-	    	echo '<tr valign="top">
+			ob_start();
+			echo '<tr valign="top">
 			<th scope="row" class="titledesc">
 				<label for="'.str_replace('-','',$key).'">';
 			echo $data['title'];
@@ -358,21 +358,21 @@ function woocommerce_afterpay_init() {
 			</th>
 			<td class="forminp">';
 
-	    	wp_editor(html_entity_decode($value),str_replace('-','',$key),array('textarea_name'=>$this->plugin_id . $this->id . '_' . $key,'editor_class'=>$data['class'],'editor_css'=>$data['css'],'autop'=>true,'textarea_rows'=>8));
-	    	echo '<p class="description">'.$data['label'].'</p>';
-	    	echo '</td></tr>';
+			wp_editor(html_entity_decode($value),str_replace('-','',$key),array('textarea_name'=>$this->plugin_id . $this->id . '_' . $key,'editor_class'=>$data['class'],'editor_css'=>$data['css'],'autop'=>true,'textarea_rows'=>8));
+			echo '<p class="description">'.$data['label'].'</p>';
+			echo '</td></tr>';
 
-	    	$html = ob_get_clean();
+			$html = ob_get_clean();
 
-	    	return $html;
-	    }
+			return $html;
+		}
 
 		/**
-	     * Display payment options on the checkout page
+		 * Display payment options on the checkout page
 		 *
 		 * @since 1.0.0
-	     */
-        function payment_fields() {
+		 */
+		function payment_fields() {
 			global $woocommerce;
 
 			$ordertotal = $woocommerce->cart->total;
@@ -398,7 +398,7 @@ function woocommerce_afterpay_init() {
 			<?php include("checkout/modal.php"); ?>
 
 		<?php
-        }
+		}
 
 		/**
 		 * Request an order token from Afterpay
@@ -419,28 +419,28 @@ function woocommerce_afterpay_init() {
 					if ($item['variation_id']) {
 
 						if(function_exists("wc_get_product")) {
-					    	$product = wc_get_product($item['variation_id']);
-					    }
-					    else {
-					    	$product = new WC_Product($item['variation_id']);
-					    }
-				  	}
-				  	else {
+							$product = wc_get_product($item['variation_id']);
+						}
+						else {
+							$product = new WC_Product($item['variation_id']);
+						}
+					  }
+					  else {
 
-				  		if(function_exists("wc_get_product")) {
-				    		$product = wc_get_product($item['product_id']);
-					    }
-					    else {
-					    	$product = new WC_Product($item['product_id']);
-					    }
-				  	}
+						  if(function_exists("wc_get_product")) {
+							$product = wc_get_product($item['product_id']);
+						}
+						else {
+							$product = new WC_Product($item['product_id']);
+						}
+					  }
 
 					$product =
 						$items[] = array(
-							'name' 		=> $item['name'],
-							'sku' 		=> $product->get_sku(),
-							'quantity' 	=> $item['qty'],
-							'price' 	=> array(
+							'name'         => $item['name'],
+							'sku'         => $product->get_sku(),
+							'quantity'     => $item['qty'],
+							'price'     => array(
 								'amount' => number_format(($item['line_subtotal'] / $item['qty']),2,'.',''),
 								'currency' => get_woocommerce_currency()
 							)
@@ -449,12 +449,12 @@ function woocommerce_afterpay_init() {
 			}
 
 			$body = array(
-				'consumer' => array(
-					'mobile' => $order->billing_phone,
-					'givenNames' => $order->billing_first_name,
-					'surname' => $order->billing_last_name,
-					'email' => $order->billing_email
-					),
+				'consumer' => [
+					'mobile'     => is_callable($order, 'get_billing_phone') ? $order->get_billing_phone() : $order->billing_phone,
+					'givenNames' => is_callable($order, 'get_billing_first_name') ? $order->get_billing_first_name() : $order->billing_first_name,
+					'surname'    => is_callable($order, 'get_billing_last_name') ? $order->get_billing_last_name() : $order->billing_last_name,
+					'email'      => is_callable($order, 'get_billing_email') ? $order->get_billing_email() : $order->billing_email,
+				],
 				'paymentType' => $type, // PBI
 				'orderDetail' => array(
 					'merchantOrderDate' => time(),
@@ -508,7 +508,7 @@ function woocommerce_afterpay_init() {
 			$args = array(
 				'headers' => array(
 								'Authorization' => $this->get_afterpay_authorization_code(),
-								'Content-Type' 	=> 'application/json',
+								'Content-Type'     => 'application/json',
 							),
 				'body' => json_encode($body)
 			);
@@ -551,38 +551,38 @@ function woocommerce_afterpay_init() {
 
 			if( count($validoptions) == 0 ) {
 				// amount is not supported
-			        $order->add_order_note(__('Order amount: $' . number_format($ordertotal, 2) . ' is not supported.', 'woo_afterpay'));
-			        wc_add_notice(__('Unfortunately, an order of $' . number_format($ordertotal, 2) . ' cannot be processed through Afterpay.', 'woo_afterpay'),'error');
+					$order->add_order_note(__('Order amount: $' . number_format($ordertotal, 2) . ' is not supported.', 'woo_afterpay'));
+					wc_add_notice(__('Unfortunately, an order of $' . number_format($ordertotal, 2) . ' cannot be processed through Afterpay.', 'woo_afterpay'),'error');
 
 				//delete the order but retain the items
 				$order->update_status('trash');
 				WC()->session->order_awaiting_payment = NULL;
 
 				return array(
-				        'result' => 'failure',
-				        'redirect' => $order->get_checkout_payment_url(true)
-			      	);
+						'result' => 'failure',
+						'redirect' => $order->get_checkout_payment_url(true)
+					  );
 
 			}
 			else if ($token == false) {
 				// Couldn't generate token
-            	$order->add_order_note(__('Unable to generate the order token. Payment couldn\'t proceed.', 'woo_afterpay'));
-                wc_add_notice(__('Sorry, there was a problem preparing your payment.', 'woo_afterpay'),'error');
-		        return array(
-		            'result' => 'failure',
-		            'redirect' => $order->get_checkout_payment_url(true)
-	      		);
+				$order->add_order_note(__('Unable to generate the order token. Payment couldn\'t proceed.', 'woo_afterpay'));
+				wc_add_notice(__('Sorry, there was a problem preparing your payment.', 'woo_afterpay'),'error');
+				return array(
+					'result' => 'failure',
+					'redirect' => $order->get_checkout_payment_url(true)
+				  );
 
-		    } else {
-		    		// Order token successful, save it so we can confirm it later
+			} else {
+					// Order token successful, save it so we can confirm it later
 				update_post_meta($order_id,'_afterpay_token',$token);
-		    }
+			}
 
 			$redirect = $order->get_checkout_payment_url( true );
 
 			return array(
-				'result' 	=> 'success',
-				'redirect'	=> $redirect
+				'result'     => 'success',
+				'redirect'    => $redirect
 			);
 
 		}
@@ -660,7 +660,7 @@ function woocommerce_afterpay_init() {
 				$response = wp_remote_get(
 								$this->orderurl.'/'.$_GET['orderId'],
 								array(
-									'headers'	=>	array(
+									'headers'    =>    array(
 														'Authorization' => $this->get_afterpay_authorization_code()
 													)
 								)
@@ -1193,26 +1193,26 @@ function woocommerce_afterpay_init() {
 	}
 
 	function afterpay_edit_variation_price_html( $price, $variation ) {
- 		$return_html = $price;
+		 $return_html = $price;
 		$settings = get_option('woocommerce_afterpay_settings');
 
 		if (!isset($settings['enabled']) || $settings['enabled'] !== 'yes') return;
 
- 		if (isset($settings['show-info-on-product-pages']) && $settings['show-info-on-product-pages'] == 'yes' && isset($settings['product-pages-info-text'])) {
- 			$price = $variation->get_price();
+		 if (isset($settings['show-info-on-product-pages']) && $settings['show-info-on-product-pages'] == 'yes' && isset($settings['product-pages-info-text'])) {
+			 $price = $variation->get_price();
 
 			// Don't display if the parent product is a subscription product
-		 	if ($variation->parent->is_type('subscription')) return;
+			 if ($variation->parent->is_type('subscription')) return;
 
 			// Don't show if the amount is zero, or if the amount doesn't fit within the limits
 			if ($price == 0 || $settings['pay-over-time-limit-max'] < $price || $settings['pay-over-time-limit-min'] > $price) return;
 
 			$instalment_price_html = wc_price($price / 4);
-		 	$afterpay_paragraph_html = str_replace('[AMOUNT]', $instalment_price_html, $settings['product-pages-info-text']);
-		 	$return_html .= '<p class="afterpay-payment-info">' . $afterpay_paragraph_html . '</p>';
+			 $afterpay_paragraph_html = str_replace('[AMOUNT]', $instalment_price_html, $settings['product-pages-info-text']);
+			 $return_html .= '<p class="afterpay-payment-info">' . $afterpay_paragraph_html . '</p>';
 		}
 		return $return_html;
- 	}
+	 }
 
 	add_filter( 'woocommerce_variation_price_html', 'afterpay_edit_variation_price_html', 10, 2);
 	add_filter( 'woocommerce_variation_sale_price_html', 'afterpay_edit_variation_price_html', 10, 2);
@@ -1346,11 +1346,11 @@ register_deactivation_hook( __FILE__, 'afterpay_delete_wpcronjob' );
  * @since 1.0.0
  **/
 function afterpay_add_fifteen_minute_schedule( $schedules ) {
-  	$schedules['fifteenminutes'] = array(
-    	'interval' => 15 * 60,
-    	'display' => __( 'Every 15 minutes', 'woo_afterpay' )
-  	);
-  	return $schedules;
+	  $schedules['fifteenminutes'] = array(
+		'interval' => 15 * 60,
+		'display' => __( 'Every 15 minutes', 'woo_afterpay' )
+	  );
+	  return $schedules;
 }
 add_filter('cron_schedules', 'afterpay_add_fifteen_minute_schedule');
 
@@ -1369,18 +1369,18 @@ function afterpay_get_aws_assets() {
 	$path = dirname(__FILE__) . '/images/checkout';
 
 	// Create folder structure if not exist
-    if (!is_dir($path) || !is_writable($path)) {
+	if (!is_dir($path) || !is_writable($path)) {
 		mkdir($path);
-    }
+	}
 
-    // By pass try catch, always log it if fails
-    try {
-    	copy($afterpay_assets_modal, $path . '/banner-large.png');
-        copy($afterpay_assets_modal_mobile, $path . '/modal-mobile.png');
+	// By pass try catch, always log it if fails
+	try {
+		copy($afterpay_assets_modal, $path . '/banner-large.png');
+		copy($afterpay_assets_modal_mobile, $path . '/modal-mobile.png');
 	}
 	catch (Exception $e) {
-	    // log now if fails
-	    $this->log('Error Updating assets from source. %s', $e->getMessage());
+		// log now if fails
+		$this->log('Error Updating assets from source. %s', $e->getMessage());
 	}
 }
 add_action('wp_login', 'afterpay_get_aws_assets');
