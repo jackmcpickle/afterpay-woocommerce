@@ -5,6 +5,12 @@ Platform: WooCommerce
 Supported Editions and Versions:
 - WooCommerce version 2.1 and later
 
+### Release version: 1.3.3
+
+Release date: 24 Oct 2017
+
+- Various bug fixes
+
 ### Release version: 1.3.2
 
 Release date: 24 Oct 2017
