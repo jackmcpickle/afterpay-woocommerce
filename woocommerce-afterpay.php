@@ -613,7 +613,7 @@ function woocommerce_afterpay_init() {
 
 			// Update order status if it isn't already
 			$is_pending = false;
-			if ( function_exists("has_status") ) {
+			if ( is_callable($order, 'has_status') ) {
 				$is_pending = $order->has_status('pending');
 			}
 			else {
@@ -672,7 +672,7 @@ function woocommerce_afterpay_init() {
 				//backwards compatibility with WooCommerce 2.1.x
 				$is_completed = $is_processing = $is_pending = $is_on_hold =  $is_failed = false;
 
-				if ( function_exists("has_status") ) {
+				if ( is_callable($order, 'has_status') ) {
 					$is_completed = $order->has_status('completed');
 					$is_processing = $order->has_status('processing');
 					$is_pending = $order->has_status('pending');
