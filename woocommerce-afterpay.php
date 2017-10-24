@@ -525,7 +525,11 @@ function woocommerce_afterpay_init()
             $response = wp_remote_post($this->orderurl, $args);
             $body = json_decode(wp_remote_retrieve_body($response));
 
-            $this->log('Order token result: '.print_r($body, true));
+            if ( ! is_wp_error( $response ) ) {
+                $this->log( 'Order token result: ' . print_r( $body, true ) );
+            } else {
+                $this->log( 'Error retrieving Order token: ' . print_r( $response, true ) );
+            }
 
             if (isset($body->orderToken)) {
                 return $body->orderToken;
@@ -571,7 +575,7 @@ function woocommerce_afterpay_init()
             } elseif ($token == false) {
                 // Couldn't generate token
                 $order->add_order_note(__('Unable to generate the order token. Payment couldn\'t proceed.', 'woo_afterpay'));
-                wc_add_notice(__('Sorry, there was a problem preparing your payment.', 'woo_afterpay'), 'error');
+                wc_add_notice(apply_filters('afterpay_preparing_payment_problem_message', __('Sorry, there was a problem preparing your payment.', 'woo_afterpay') ), 'error');
                 return [
                     'result' => 'failure',
                     'redirect' => $order->get_checkout_payment_url(true)
@@ -665,6 +669,14 @@ function woocommerce_afterpay_init()
                                                     ]
                                 ]
                             );
+
+                if ( is_wp_error( $response ) ) {
+                    /** @var WP_Error $response */
+                    $this->log( 'Error while checking order status result: ' . $response->get_error_message() );
+                    $order->add_order_note(sprintf(__('Error when obtaining payment confirmation from AfterPay. Afterpay Token: %s','woo_afterpay'),
+                        get_post_meta($order_id,'_afterpay_token',true)));
+                    return $order_id;
+                }
                 $body = json_decode(wp_remote_retrieve_body($response));
 
                 $this->log('Checking order status result: '.print_r($body, true));
@@ -1006,6 +1018,13 @@ function woocommerce_afterpay_init()
                                     ]
                                 ]
                             );
+                if ( is_wp_error( $response ) ) {
+                    /** @var WP_Error $response */
+                    self::log( 'Error while checking order status result: ' . $response->get_error_message() );
+                    $order->add_order_note(sprintf(__('Error when obtaining payment confirmation from AfterPay for order with transaction: %s','woo_afterpay'),
+                    $afterpay_orderid));
+                    continue;
+                }
                 $body = json_decode(wp_remote_retrieve_body($response));
 
                 $this->log('Checking pending order result: '.print_r($body, true));
@@ -1061,6 +1080,13 @@ function woocommerce_afterpay_init()
                                     ]
                                 ]
                             );
+                if ( is_wp_error( $response ) ) {
+                    /** @var WP_Error $response */
+                    self::log( 'Error while checking order status result: ' . $response->get_error_message() );
+                    $order->add_order_note(sprintf(__('Error when obtaining payment confirmation from AfterPay for order with transaction: %s','woo_afterpay'),
+                        $afterpay_orderid));
+                    continue;
+                }
                 $body = json_decode(wp_remote_retrieve_body($response));
 
                 $this->log('Checking abandoned order result: '.print_r($body, true));
