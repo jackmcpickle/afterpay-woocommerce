@@ -465,28 +465,28 @@ function woocommerce_afterpay_init()
                 'paymentType' => $type, // PBI
                 'orderDetail' => [
                     'merchantOrderDate' => time(),
-                    'merchantOrderId' => $order->id,
-                    'items' => $items,
-                    'includedTaxes' => [
-                        'amount' => number_format($order->get_cart_tax(), 2, '.', ''),
+                    'merchantOrderId'   => is_callable($order, 'get_id') ? $order->get_id(): $order->id,
+                    'items'             => $items,
+                    'includedTaxes'     => [
+                        'amount'   => number_format($order->get_cart_tax(), 2, '.', ''),
                         'currency' => get_woocommerce_currency()
                         ],
                     'shippingAddress' => [
-                        'name' => $order->shipping_first_name.' '.$order->shipping_last_name,
-                        'address1' => $order->shipping_address_1,
-                        'address2' => $order->shipping_address_2,
-                        'suburb' => $order->shipping_city,
-                        'postcode' => $order->shipping_postcode
+                        'name'     => $order->get_formatted_shipping_full_name(),
+                        'address1' => is_callable($order, 'get_shipping_address_1') ? $order->get_shipping_address_1() : $order->shipping_address_1,
+                        'address2' => is_callable($order, 'get_shipping_address_2') ? $order->get_shipping_address_2() : $order->shipping_address_2,
+                        'suburb'   => is_callable($order, 'get_shipping_city') ? $order->get_shipping_city() : $order->shipping_city,
+                        'postcode' => is_callable($order, 'get_shipping_postcode') ? $order->get_shipping_postcode() : $order->shipping_postcode,
                         ],
                     'billingAddress' => [
-                        'name' => $order->billing_first_name.' '.$order->billing_last_name,
-                        'address1' => $order->billing_address_1,
-                        'address2' => $order->billing_address_2,
-                        'suburb' => $order->billing_city,
-                        'postcode' => $order->billing_postcode
+                        'name'     => $order->get_formatted_billing_full_name(),
+                        'address1' => is_callable($order, 'get_billing_address_1') ? $order->get_billing_address_1() : $order->billing_address_1,
+                        'address2' => is_callable($order, 'get_billing_address_2') ? $order->get_billing_address_2() : $order->billing_address_2,
+                        'suburb'   => is_callable($order, 'get_billing_city') ? $order->get_billing_city() : $order->billing_city,
+                        'postcode' => is_callable($order, 'get_billing_postcode') ? $order->get_billing_postcode() : $order->billing_postcode,
                         ],
                     'orderAmount' => [
-                        'amount' => number_format($order->get_total(), 2, '.', ''),
+                        'amount'   => number_format($order->get_total(), 2, '.', ''),
                         'currency' => get_woocommerce_currency()
                         ]
                     ]
