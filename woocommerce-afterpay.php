@@ -1008,7 +1008,7 @@ function woocommerce_afterpay_init()
                     continue;
                 }
 
-                $this->log('Checking pending order for WC Order ID '.$order->ID.', Afterpay Order ID '.$afterpay_orderid);
+                $this->log('Checking pending order for WC Order ID '.$onhold_order->ID.', Afterpay Order ID '.$afterpay_orderid);
 
                 $response = wp_remote_get(
                                 $this->orderurl.'/'.$afterpay_orderid,
@@ -1070,7 +1070,7 @@ function woocommerce_afterpay_init()
                     continue;
                 }
 
-                $this->log('Checking abandoned order for WC Order ID '.$order->ID.', Afterpay Token '.$afterpay_token);
+                $this->log('Checking abandoned order for WC Order ID '.$pending_order->ID.', Afterpay Token '.$afterpay_token);
 
                 $response = wp_remote_get(
                                 $this->orderurl.'?token='.$afterpay_token,
