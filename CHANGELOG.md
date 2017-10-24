@@ -1,13 +1,17 @@
-*** Afterpay Gateway Change Log ***
+# Afterpay Gateway Change Log
 Copyright (c) 2017 AfterPay (http://afterpay.com.au/)
 
-Release version: 1.3.1
-Release date: 10 Apr 2017
- 
 Platform: WooCommerce
 Supported Editions and Versions:
-- 	WooCommerce version 2.1 and later
- 
+- WooCommerce version 2.1 and later
+
+### Release version: 1.3.2
+
+Release date: 24 Oct 2017
+
+- Fix issue fix minimumAmount not set
+- Fix order methods called incorrectly in WooCommerce 3.
+
 Release Summary
 Version 1.3.1 of the Afterpay-WooCommerce plugin delivers:
 - 	Enhancement to support the product data changes introduced in WooCommerce v3.0.0 (released 04 Apr 2017, https://woocommerce.wordpress.com/2017/04/04/say-hello-to-woocommerce-3-0-bionic-butterfly).
