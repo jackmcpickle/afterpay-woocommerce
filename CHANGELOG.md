@@ -5,6 +5,12 @@ Platform: WooCommerce
 Supported Editions and Versions:
 - WooCommerce version 2.1 and later
 
+### Release version 1.3.4
+
+Release date: 06 Mar 2018
+
+- Fix incorrect use of `is_callable` in `WC_Gateway_Afterpay->reciept_page()`
+
 ### Release version: 1.3.3
 
 Release date: 24 Oct 2017
@@ -21,7 +27,7 @@ Release date: 24 Oct 2017
 Release Summary
 Version 1.3.1 of the Afterpay-WooCommerce plugin delivers:
 - 	Enhancement to support the product data changes introduced in WooCommerce v3.0.0 (released 04 Apr 2017, https://woocommerce.wordpress.com/2017/04/04/say-hello-to-woocommerce-3-0-bionic-butterfly).
- 
+
 Compability Enhancements
 
 Release Details
@@ -29,7 +35,7 @@ Product Data Retrieval Changes
 -	Implemented improved checkout handling to avoid "Invalid Product" exception introduced in WooCommerce 3.0.0.
 -	Implemented Products Data Retrieval as recommended in WooCommerce 3.0.0 Class specifications (https://docs.woocommerce.com/wc-apidocs/class-WC_Product_Variation.html)
 -	Implemented backwards compatibility handling for Products Data Retrieval for WooCommerce 2.6.14 down to 2.1
- 
+
 
 
 2016.06.15 - version 1.3.0
@@ -53,7 +59,7 @@ Product Data Retrieval Changes
  * Fix: return url when siteurl is http on https site
 
 2015.08.16 - version 1.0
- * First Release 
+ * First Release
 
 
 Important Notes:

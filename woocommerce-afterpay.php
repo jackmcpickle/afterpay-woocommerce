@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Afterpay Gateway
 Plugin URI: http://woothemes.com/woocommerce
 Description: Use Afterpay as a credit card processor for WooCommerce.
-Version: 1.3.3
+Version: 1.3.4
 Author: AfterPay
 Author URI: http://www.afterpay.com.au/
 
