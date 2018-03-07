@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Afterpay Gateway
 Plugin URI: http://woothemes.com/woocommerce
 Description: Use Afterpay as a credit card processor for WooCommerce.
-Version: 1.3.2
+Version: 1.3.3
 Author: AfterPay
 Author URI: http://www.afterpay.com.au/
 
@@ -619,7 +619,7 @@ function woocommerce_afterpay_init()
 
             // Update order status if it isn't already
             $is_pending = false;
-            if (is_callable($order, 'has_status')) {
+            if ( is_callable( [ $order, 'has_status'] ) ) {
                 $is_pending = $order->has_status('pending');
             } else {
                 if ($order->status == 'pending') {
