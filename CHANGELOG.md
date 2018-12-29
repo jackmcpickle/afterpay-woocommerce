@@ -5,6 +5,12 @@ Platform: WooCommerce
 Supported Editions and Versions:
 - WooCommerce version 2.1 and later
 
+### Release version 1.3.5
+
+Release date: 29 Dec 2018
+
+- Remove call to `$.fancybox()` from modal template
+
 ### Release version 1.3.4
 
 Release date: 06 Mar 2018
