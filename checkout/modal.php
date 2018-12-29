@@ -11,8 +11,3 @@
         <img class="afterpay-modal-image-mobile" src="https://static.secure-afterpay.com.au/modal-mobile.png" alt="Afterpay" />
     </a>
 </div>
-
-<script type="text/javascript">
-    // included inline as this template is loaded through an ajax request
-    jQuery('#what-is-afterpay-trigger').fancybox();
-</script>
